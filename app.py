@@ -1,5 +1,5 @@
 # Adapted from https://docs.streamlit.io/knowledge-base/tutorials/build-conversational-apps#build-a-simple-chatbot-gui-with-streaming
-import os
+import os, time
 import gc
 import re
 import glob
@@ -111,6 +111,8 @@ with st.sidebar:
     api_key_button = st.button("Load OPEN AI Key",icon=":material/key:", use_container_width=True)
     if api_key_button and open_ai_key == "":
         st.error("Please enter your Open AI Key")
+    else:
+        st.info("Open AI Key Loaded successfully")
 
     # Input for GitHub URL
     github_url = st.text_input("GitHub Repository URL")
