@@ -111,7 +111,7 @@ with st.sidebar:
     api_key_button = st.button("Load OPEN AI Key",icon=":material/key:", use_container_width=True)
     if api_key_button and open_ai_key == "":
         st.error("Please enter your Open AI Key")
-    else:
+    elif api_key_button:
         st.info("Open AI Key Loaded successfully")
 
     # Input for GitHub URL
@@ -243,6 +243,8 @@ if prompt := st.chat_input("What's up?"):
 
         message_placeholder.markdown(full_response)
         # st.session_state.context = ctx
+        st.download_button(label="Copy", data=full_response, file_name="response.txt", mime="text/plain")
+
 
     # Add assistant response to chat history
     st.session_state.messages.append({"role": "assistant", "content": full_response})
