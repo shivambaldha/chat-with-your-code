@@ -25,11 +25,17 @@ from llama_index.embeddings.fastembed import FastEmbedEmbedding
 from llama_index.core import Settings
 
 
-api_key = os.getenv("API_KEY")
+open_ai_api_key = os.getenv("API_KEY")
 
 # setting up the llm
 @st.cache_resource
-def load_llm(model_name = "gpt-4o"):
+def load_llm(model_name = "gpt-4o", key = ""):
+    if key != "":
+        api_key = key
+    else:
+        api_key = open_ai_api_key
+
+    # Initialize OpenAI LLM with the provided API key and model name
     llm=OpenAI(model=model_name, api_key = api_key)
     return llm
 
@@ -100,7 +106,12 @@ def reset_chat():
 
 
 with st.sidebar:
-    
+
+    open_ai_key = st.text_input("Enter your Open AI Key", type="password")
+    api_key_button = st.button("Load OPEN AI Key",icon=":material/key:", use_container_width=True)
+    if api_key_button and open_ai_key == "":
+        st.error("Please enter your Open AI Key")
+
     # Input for GitHub URL
     github_url = st.text_input("GitHub Repository URL")
 
@@ -146,7 +157,7 @@ with st.sidebar:
                         index = VectorStoreIndex(nodes=nodes)
 
                     # ====== Setup a query engine ======
-                    Settings.llm = load_llm(model_name="gpt-4o")
+                    Settings.llm = load_llm(model_name="gpt-4o", key = open_ai_key)
                     query_engine = index.as_query_engine(streaming=True, similarity_top_k=4)
                     
                     # ====== Customise prompt template ======
@@ -186,6 +197,7 @@ col1, col2 = st.columns([6, 1])
 
 with col1:
     st.header(f"Chat with your code! </>")
+    st.markdown("```Welcome to the chat server with your code, Here we only support .py, .ipynb, .md, .js and .ts files```")
 
 with col2:
     st.button("Clear ↺", on_click=reset_chat)
